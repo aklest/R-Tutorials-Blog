@@ -1,0 +1,62 @@
+[
+  {
+    "path": "posts/welcome/",
+    "title": "Welcome to My Blog",
+    "description": "Welcome to our new blog, My Blog. We hope you enjoy \nreading what we have to say!",
+    "author": [
+      {
+        "name": "Nora Jones",
+        "url": "https://example.com/norajones"
+      }
+    ],
+    "date": "2019-06-12",
+    "categories": [],
+    "preview": {},
+    "last_modified": "2019-06-12T14:13:07-07:00"
+  },
+  {
+    "path": "posts/2019-06-12-purrrmap/",
+    "title": "Purrr::Map",
+    "description": "This will provide a guide to using map() in R-studio.",
+    "author": [
+      {
+        "name": "Shaina Trevino, Jonathan Rochelle, Andre Klest",
+        "url": "https://example.com/norajones"
+      }
+    ],
+    "date": "2019-06-12",
+    "categories": [],
+    "preview": {},
+    "last_modified": "2019-06-12T14:27:30-07:00"
+  },
+  {
+    "path": "posts/2019-06-12-functions/",
+    "title": "Functions",
+    "description": "This post provides information on creating functions in R-Studio",
+    "author": [
+      {
+        "name": "Shaina Trevino, Jonathan Rochelle, Andre Klest",
+        "url": "https://example.com/norajones"
+      }
+    ],
+    "date": "2019-06-12",
+    "categories": [],
+    "preview": {},
+    "last_modified": "2019-06-12T14:36:48-07:00"
+  },
+  {
+    "path": "posts/2019-06-12-final-summary/",
+    "title": "Final Summary",
+    "description": "Provides a summary and application of content covered in the purr::map and functions posts.",
+    "author": [
+      {
+        "name": "Shaina Trevino, Jonathan Rochelle, Andre Klest",
+        "url": "https://example.com/norajones"
+      }
+    ],
+    "date": "2019-06-12",
+    "categories": [],
+    "preview": {},
+    "last_modified": "2019-06-12T14:38:59-07:00"
+  }
+]

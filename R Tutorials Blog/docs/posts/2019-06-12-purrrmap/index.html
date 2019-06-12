@@ -1,0 +1,1653 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1"/>
+  <meta name="generator" content="distill" />
+
+  <style type="text/css">
+  /* Hide doc at startup (prevent jankiness while JS renders/transforms) */
+  body {
+    visibility: hidden;
+  }
+  </style>
+
+ <!--radix_placeholder_import_source-->
+ <!--/radix_placeholder_import_source-->
+
+  <!--radix_placeholder_meta_tags-->
+<title>R Tutorials Blog: Purrr::Map</title>
+
+<meta property="description" itemprop="description" content="This will provide a guide to using map() in R-studio."/>
+
+
+<!--  https://schema.org/Article -->
+<meta property="article:published" itemprop="datePublished" content="2019-06-12"/>
+<meta property="article:created" itemprop="dateCreated" content="2019-06-12"/>
+<meta name="article:author" content="Shaina Trevino, Jonathan Rochelle, Andre Klest"/>
+
+<!--  https://developers.facebook.com/docs/sharing/webmasters#markup -->
+<meta property="og:title" content="R Tutorials Blog: Purrr::Map"/>
+<meta property="og:type" content="article"/>
+<meta property="og:description" content="This will provide a guide to using map() in R-studio."/>
+<meta property="og:locale" content="en_US"/>
+<meta property="og:site_name" content="R Tutorials Blog"/>
+
+<!--  https://dev.twitter.com/cards/types/summary -->
+<meta property="twitter:card" content="summary"/>
+<meta property="twitter:title" content="R Tutorials Blog: Purrr::Map"/>
+<meta property="twitter:description" content="This will provide a guide to using map() in R-studio."/>
+
+<!--/radix_placeholder_meta_tags-->
+  <!--radix_placeholder_rmarkdown_metadata-->
+
+<script type="text/json" id="radix-rmarkdown-metadata">
+{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","description","author","date","output"]}},"value":[{"type":"character","attributes":{},"value":["Purrr::Map"]},{"type":"character","attributes":{},"value":["This will provide a guide to using map() in R-studio."]},{"type":"list","attributes":{},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","url"]}},"value":[{"type":"character","attributes":{},"value":["Shaina Trevino, Jonathan Rochelle, Andre Klest"]},{"type":"character","attributes":{},"value":["https://example.com/norajones"]}]}]},{"type":"character","attributes":{},"value":["06-12-2019"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["distill::distill_article"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["self_contained"]}},"value":[{"type":"logical","attributes":{},"value":[false]}]}]}]}
+</script>
+<!--/radix_placeholder_rmarkdown_metadata-->
+  
+  <script type="text/json" id="radix-resource-manifest">
+  {"type":"character","attributes":{},"value":["purrrmap_files/bowser-1.9.3/bowser.min.js","purrrmap_files/distill-2.2.21/template.v2.js","purrrmap_files/jquery-1.11.3/jquery.min.js","purrrmap_files/webcomponents-2.0.0/webcomponents.js"]}
+  </script>
+  <!--radix_placeholder_navigation_in_header-->
+
+<script type="application/javascript">
+
+  window.headroom_prevent_pin = false;
+
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+
+    // initialize headroom for banner
+    var header = $('header').get(0);
+    var headerHeight = header.offsetHeight;
+    var headroom = new Headroom(header, {
+      onPin : function() {
+        if (window.headroom_prevent_pin) {
+          window.headroom_prevent_pin = false;
+          headroom.unpin();
+        }
+      }
+    });
+    headroom.init();
+    if(window.location.hash)
+      headroom.unpin();
+    $(header).addClass('headroom--transition');
+
+    // offset scroll location for banner on hash change
+    // (see: https://github.com/WickyNilliams/headroom.js/issues/38)
+    window.addEventListener("hashchange", function(event) {
+      window.scrollTo(0, window.pageYOffset - (headerHeight + 25));
+    });
+
+    // responsive menu
+    $('.distill-site-header').each(function(i, val) {
+      var topnav = $(this);
+      var toggle = topnav.find('.nav-toggle');
+      toggle.on('click', function() {
+        topnav.toggleClass('responsive');
+      });
+    });
+
+    // nav dropdowns
+    $('.nav-dropbtn').click(function(e) {
+      $(this).next('.nav-dropdown-content').toggleClass('nav-dropdown-active');
+      $(this).parent().siblings('.nav-dropdown')
+         .children('.nav-dropdown-content').removeClass('nav-dropdown-active');
+    });
+    $("body").click(function(e){
+      $('.nav-dropdown-content').removeClass('nav-dropdown-active');
+    });
+    $(".nav-dropdown").click(function(e){
+      e.stopPropagation();
+    });
+  });
+</script>
+
+<style type="text/css">
+
+/* Theme (user-documented overrideables for nav appearance) */
+
+.distill-site-nav {
+  color: rgba(255, 255, 255, 0.8);
+  background-color: #455a64;
+  font-size: 15px;
+  font-weight: 300;
+}
+
+.distill-site-nav a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.distill-site-nav a:hover {
+  color: white;
+}
+
+@media print {
+  .distill-site-nav {
+    display: none;
+  }
+}
+
+.distill-site-header {
+
+}
+
+.distill-site-footer {
+
+}
+
+
+/* Site Header */
+
+.distill-site-header {
+  width: 100%;
+  box-sizing: border-box;
+  z-index: 3;
+}
+
+.distill-site-header .nav-left {
+  display: inline-block;
+  margin-left: 8px;
+}
+
+@media screen and (max-width: 768px) {
+  .distill-site-header .nav-left {
+    margin-left: 0;
+  }
+}
+
+
+.distill-site-header .nav-right {
+  float: right;
+  margin-right: 8px;
+}
+
+.distill-site-header a,
+.distill-site-header .title {
+  display: inline-block;
+  text-align: center;
+  padding: 14px 10px 14px 10px;
+}
+
+.distill-site-header .title {
+  font-size: 18px;
+}
+
+.distill-site-header .logo {
+  padding: 0;
+}
+
+.distill-site-header .logo img {
+  display: none;
+  max-height: 20px;
+  width: auto;
+  margin-bottom: -4px;
+}
+
+.distill-site-header .nav-image img {
+  max-height: 18px;
+  width: auto;
+  display: inline-block;
+  margin-bottom: -3px;
+}
+
+
+
+@media screen and (min-width: 1000px) {
+  .distill-site-header .logo img {
+    display: inline-block;
+  }
+  .distill-site-header .nav-left {
+    margin-left: 20px;
+  }
+  .distill-site-header .nav-right {
+    margin-right: 20px;
+  }
+  .distill-site-header .title {
+    padding-left: 12px;
+  }
+}
+
+
+.distill-site-header .nav-toggle {
+  display: none;
+}
+
+.nav-dropdown {
+  display: inline-block;
+  position: relative;
+}
+
+.nav-dropdown .nav-dropbtn {
+  border: none;
+  outline: none;
+  color: rgba(255, 255, 255, 0.8);
+  padding: 16px 10px;
+  background-color: transparent;
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  margin: 0;
+  margin-top: 1px;
+  z-index: 2;
+}
+
+.nav-dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: white;
+  min-width: 200px;
+  border: 1px solid rgba(0,0,0,0.15);
+  border-radius: 4px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.1);
+  z-index: 1;
+  margin-top: 2px;
+  white-space: nowrap;
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+.nav-dropdown-content hr {
+  margin-top: 4px;
+  margin-bottom: 4px;
+  border: none;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.nav-dropdown-active {
+  display: block;
+}
+
+.nav-dropdown-content a, .nav-dropdown-content .nav-dropdown-header {
+  color: black;
+  padding: 6px 24px;
+  text-decoration: none;
+  display: block;
+  text-align: left;
+}
+
+.nav-dropdown-content .nav-dropdown-header {
+  display: block;
+  padding: 5px 24px;
+  padding-bottom: 0;
+  text-transform: uppercase;
+  font-size: 14px;
+  color: #999999;
+  white-space: nowrap;
+}
+
+.nav-dropdown:hover .nav-dropbtn {
+  color: white;
+}
+
+.nav-dropdown-content a:hover {
+  background-color: #ddd;
+  color: black;
+}
+
+.nav-right .nav-dropdown-content {
+  margin-left: -45%;
+  right: 0;
+}
+
+@media screen and (max-width: 768px) {
+  .distill-site-header a, .distill-site-header .nav-dropdown  {display: none;}
+  .distill-site-header a.nav-toggle {
+    float: right;
+    display: block;
+  }
+  .distill-site-header .title {
+    margin-left: 0;
+  }
+  .distill-site-header .nav-right {
+    margin-right: 0;
+  }
+  .distill-site-header {
+    overflow: hidden;
+  }
+  .nav-right .nav-dropdown-content {
+    margin-left: 0;
+  }
+}
+
+
+@media screen and (max-width: 768px) {
+  .distill-site-header.responsive {position: relative;}
+  .distill-site-header.responsive a.nav-toggle {
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
+  .distill-site-header.responsive a,
+  .distill-site-header.responsive .nav-dropdown {
+    display: block;
+    text-align: left;
+  }
+  .distill-site-header.responsive .nav-left,
+  .distill-site-header.responsive .nav-right {
+    width: 100%;
+  }
+  .distill-site-header.responsive .nav-dropdown {float: none;}
+  .distill-site-header.responsive .nav-dropdown-content {position: relative;}
+  .distill-site-header.responsive .nav-dropdown .nav-dropbtn {
+    display: block;
+    width: 100%;
+    text-align: left;
+  }
+}
+
+/* Site Footer */
+
+.distill-site-footer {
+  width: 100%;
+  overflow: hidden;
+  box-sizing: border-box;
+  z-index: 3;
+  margin-top: 30px;
+  padding-top: 30px;
+  padding-bottom: 30px;
+  text-align: center;
+}
+
+/* Headroom */
+
+d-title {
+  padding-top: 6rem;
+}
+
+@media print {
+  d-title {
+    padding-top: 4rem;
+  }
+}
+
+.headroom {
+  z-index: 1000;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+
+.headroom--transition {
+  transition: all .4s ease-in-out;
+}
+
+.headroom--unpinned {
+  top: -100px;
+}
+
+.headroom--pinned {
+  top: 0;
+}
+
+</style>
+
+<link href="../../site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet"/>
+<link href="../../site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet"/>
+<script src="../../site_libs/headroom-0.9.4/headroom.min.js"></script>
+<!--/radix_placeholder_navigation_in_header-->
+  <!--radix_placeholder_distill-->
+
+<style type="text/css">
+
+body {
+  background-color: white;
+}
+
+.pandoc-table {
+  width: 100%;
+}
+
+.pandoc-table>caption {
+  margin-bottom: 10px;
+}
+
+.pandoc-table th:not([align]) {
+  text-align: left;
+}
+
+.pagedtable-footer {
+  font-size: 15px;
+}
+
+.html-widget {
+  margin-bottom: 2.0em;
+}
+
+.l-screen-inset {
+  padding-right: 16px;
+}
+
+.l-screen .caption {
+  margin-left: 10px;
+}
+
+.shaded {
+  background: rgb(247, 247, 247);
+  padding-top: 20px;
+  padding-bottom: 20px;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.shaded .html-widget {
+  margin-bottom: 0;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.shaded .shaded-content {
+  background: white;
+}
+
+.text-output {
+  margin-top: 0;
+  line-height: 1.5em;
+}
+
+.hidden {
+  display: none !important;
+}
+
+d-article {
+  padding-bottom: 30px;
+}
+
+d-appendix {
+  padding-top: 30px;
+}
+
+d-article>p>img {
+  width: 100%;
+}
+
+d-article iframe {
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  margin-bottom: 2.0em;
+  width: 100%;
+}
+
+figure img.external {
+  background: white;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.1);
+  padding: 18px;
+  box-sizing: border-box;
+}
+
+/* CSS for table of contents */
+
+.d-toc {
+  color: rgba(0,0,0,0.8);
+  font-size: 0.8em;
+  line-height: 1em;
+}
+
+.d-toc-header {
+  font-size: 0.6rem;
+  font-weight: 400;
+  color: rgba(0, 0, 0, 0.5);
+  text-transform: uppercase;
+  margin-top: 0;
+  margin-bottom: 1.3em;
+}
+
+.d-toc a {
+  border-bottom: none;
+}
+
+.d-toc ul {
+  padding-left: 0;
+}
+
+.d-toc li>ul {
+  padding-top: 0.8em;
+  padding-left: 16px;
+  margin-bottom: 0.6em;
+}
+
+.d-toc ul,
+.d-toc li {
+  list-style-type: none;
+}
+
+.d-toc li {
+  margin-bottom: 0.9em;
+}
+
+.d-toc-separator {
+  margin-top: 20px;
+  margin-bottom: 2em;
+}
+
+.d-article-with-toc {
+  border-top: none;
+  padding-top: 0;
+}
+
+
+
+/* Tweak code blocks (note that this CSS is repeated above in an injection
+   into the d-code shadow dom) */
+
+d-code {
+  overflow-x: auto !important;
+}
+
+pre.d-code code.d-code {
+  padding-left: 10px;
+  font-size: 12px;
+  border-left: 2px solid rgba(0,0,0,0.1);
+}
+
+pre.text-output {
+
+  font-size: 12px;
+  color: black;
+  background: none;
+  font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+  text-align: left;
+  white-space: pre;
+  word-spacing: normal;
+  word-break: normal;
+  word-wrap: normal;
+  line-height: 1.5;
+
+  -moz-tab-size: 4;
+  -o-tab-size: 4;
+  tab-size: 4;
+
+  -webkit-hyphens: none;
+  -moz-hyphens: none;
+  -ms-hyphens: none;
+  hyphens: none;
+}
+
+@media(min-width: 768px) {
+
+d-code {
+  overflow-x: visible !important;
+}
+
+pre.d-code code.d-code  {
+    padding-left: 18px;
+    font-size: 14px;
+}
+pre.text-output {
+  font-size: 14px;
+}
+}
+
+/* Figure */
+
+.figure {
+  position: relative;
+  margin-bottom: 2.5em;
+  margin-top: 1.5em;
+}
+
+.figure img {
+  width: 100%;
+}
+
+.figure .caption {
+  color: rgba(0, 0, 0, 0.6);
+  font-size: 12px;
+  line-height: 1.5em;
+}
+
+.figure img.external {
+  background: white;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.1);
+  padding: 18px;
+  box-sizing: border-box;
+}
+
+.figure .caption a {
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.figure .caption b,
+.figure .caption strong, {
+  font-weight: 600;
+  color: rgba(0, 0, 0, 1.0);
+}
+
+
+
+/* Tweak 1000px media break to show more text */
+
+@media(min-width: 1000px) {
+  .base-grid,
+  distill-header,
+  d-title,
+  d-abstract,
+  d-article,
+  d-appendix,
+  distill-appendix,
+  d-byline,
+  d-footnote-list,
+  d-citation-list,
+  distill-footer {
+    grid-template-columns: [screen-start] 1fr [page-start kicker-start] 80px [middle-start] 50px [text-start kicker-end] 65px 65px 65px 65px 65px 65px 65px 65px [text-end gutter-start] 65px [middle-end] 65px [page-end gutter-end] 1fr [screen-end];
+    grid-column-gap: 16px;
+  }
+
+  .grid {
+    grid-column-gap: 16px;
+  }
+
+  d-article {
+    font-size: 1.06rem;
+    line-height: 1.7em;
+  }
+  figure .caption, .figure .caption, figure figcaption {
+    font-size: 13px;
+  }
+}
+
+@media(min-width: 1180px) {
+  .base-grid,
+  distill-header,
+  d-title,
+  d-abstract,
+  d-article,
+  d-appendix,
+  distill-appendix,
+  d-byline,
+  d-footnote-list,
+  d-citation-list,
+  distill-footer {
+    grid-template-columns: [screen-start] 1fr [page-start kicker-start] 60px [middle-start] 60px [text-start kicker-end] 60px 60px 60px 60px 60px 60px 60px 60px [text-end gutter-start] 60px [middle-end] 60px [page-end gutter-end] 1fr [screen-end];
+    grid-column-gap: 32px;
+  }
+
+  .grid {
+    grid-column-gap: 32px;
+  }
+}
+
+
+/* Get the citation styles for the appendix (not auto-injected on render since
+   we do our own rendering of the citation appendix) */
+
+d-appendix .citation-appendix,
+.d-appendix .citation-appendix {
+  font-size: 11px;
+  line-height: 15px;
+  border-left: 1px solid rgba(0, 0, 0, 0.1);
+  padding-left: 18px;
+  border: 1px solid rgba(0,0,0,0.1);
+  background: rgba(0, 0, 0, 0.02);
+  padding: 10px 18px;
+  border-radius: 3px;
+  color: rgba(150, 150, 150, 1);
+  overflow: hidden;
+  margin-top: -12px;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+
+/* Social footer */
+
+.social_footer {
+  margin-top: 30px;
+  margin-bottom: 0;
+  color: rgba(0,0,0,0.67);
+}
+
+.disqus-comments {
+  margin-right: 30px;
+}
+
+.disqus-comment-count {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.4);
+  cursor: pointer;
+}
+
+#disqus_thread {
+  margin-top: 30px;
+}
+
+.article-sharing a {
+  border-bottom: none;
+  margin-right: 8px;
+}
+
+.article-sharing a:hover {
+  border-bottom: none;
+}
+
+.sidebar-section.subscribe {
+  font-size: 12px;
+  line-height: 1.6em;
+}
+
+.subscribe p {
+  margin-bottom: 0.5em;
+}
+
+
+.article-footer .subscribe {
+  font-size: 15px;
+  margin-top: 45px;
+}
+
+
+/* Improve display for browsers without grid (IE/Edge <= 15) */
+
+.downlevel {
+  line-height: 1.6em;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", Arial, sans-serif;
+  margin: 0;
+}
+
+.downlevel .d-title {
+  padding-top: 6rem;
+  padding-bottom: 1.5rem;
+}
+
+.downlevel .d-title h1 {
+  font-size: 50px;
+  font-weight: 700;
+  line-height: 1.1em;
+  margin: 0 0 0.5rem;
+}
+
+.downlevel .d-title p {
+  font-weight: 300;
+  font-size: 1.2rem;
+  line-height: 1.55em;
+  margin-top: 0;
+}
+
+.downlevel .d-byline {
+  padding-top: 0.8em;
+  padding-bottom: 0.8em;
+  font-size: 0.8rem;
+  line-height: 1.8em;
+}
+
+.downlevel .section-separator {
+  border: none;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.downlevel .d-article {
+  font-size: 1.06rem;
+  line-height: 1.7em;
+  padding-top: 1rem;
+  padding-bottom: 2rem;
+}
+
+
+.downlevel .d-appendix {
+  padding-left: 0;
+  padding-right: 0;
+  max-width: none;
+  font-size: 0.8em;
+  line-height: 1.7em;
+  margin-bottom: 0;
+  color: rgba(0,0,0,0.5);
+  padding-top: 40px;
+  padding-bottom: 48px;
+}
+
+.downlevel .footnotes ol {
+  padding-left: 13px;
+}
+
+.downlevel .base-grid,
+.downlevel .distill-header,
+.downlevel .d-title,
+.downlevel .d-abstract,
+.downlevel .d-article,
+.downlevel .d-appendix,
+.downlevel .distill-appendix,
+.downlevel .d-byline,
+.downlevel .d-footnote-list,
+.downlevel .d-citation-list,
+.downlevel .distill-footer,
+.downlevel .appendix-bottom,
+.downlevel .posts-container {
+  padding-left: 40px;
+  padding-right: 40px;
+}
+
+@media(min-width: 768px) {
+  .downlevel .base-grid,
+  .downlevel .distill-header,
+  .downlevel .d-title,
+  .downlevel .d-abstract,
+  .downlevel .d-article,
+  .downlevel .d-appendix,
+  .downlevel .distill-appendix,
+  .downlevel .d-byline,
+  .downlevel .d-footnote-list,
+  .downlevel .d-citation-list,
+  .downlevel .distill-footer,
+  .downlevel .appendix-bottom,
+  .downlevel .posts-container {
+  padding-left: 150px;
+  padding-right: 150px;
+  max-width: 900px;
+}
+}
+
+.downlevel pre code {
+  display: block;
+  border-left: 2px solid rgba(0, 0, 0, .1);
+  padding: 0 0 0 20px;
+  font-size: 14px;
+}
+
+.downlevel code, .downlevel pre {
+  color: black;
+  background: none;
+  font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+  text-align: left;
+  white-space: pre;
+  word-spacing: normal;
+  word-break: normal;
+  word-wrap: normal;
+  line-height: 1.5;
+
+  -moz-tab-size: 4;
+  -o-tab-size: 4;
+  tab-size: 4;
+
+  -webkit-hyphens: none;
+  -moz-hyphens: none;
+  -ms-hyphens: none;
+  hyphens: none;
+}
+
+</style>
+
+<script type="application/javascript">
+
+function is_downlevel_browser() {
+  if (bowser.isUnsupportedBrowser({ msie: "12", msedge: "16"},
+                                 window.navigator.userAgent)) {
+    return true;
+  } else {
+    return window.load_distill_framework === undefined;
+  }
+}
+
+// show body when load is complete
+function on_load_complete() {
+
+  // set body to visible
+  document.body.style.visibility = 'visible';
+
+  // force redraw for leaflet widgets
+  if (window.HTMLWidgets) {
+    var maps = window.HTMLWidgets.findAll(".leaflet");
+    $.each(maps, function(i, el) {
+      var map = this.getMap();
+      map.invalidateSize();
+      map.eachLayer(function(layer) {
+        if (layer instanceof L.TileLayer)
+          layer.redraw();
+      });
+    });
+  }
+
+  // trigger 'shown' so htmlwidgets resize
+  $('d-article').trigger('shown');
+}
+
+function init_distill() {
+
+  init_common();
+
+  // create front matter
+  var front_matter = $('<d-front-matter></d-front-matter>');
+  $('#distill-front-matter').wrap(front_matter);
+
+  // create d-title
+  $('.d-title').changeElementType('d-title');
+
+  // create d-byline
+  var byline = $('<d-byline></d-byline>');
+  $('.d-byline').replaceWith(byline);
+
+  // create d-article
+  var article = $('<d-article></d-article>');
+  $('.d-article').wrap(article).children().unwrap();
+
+  // move posts container into article
+  $('.posts-container').appendTo($('d-article'));
+
+  // create d-appendix
+  $('.d-appendix').changeElementType('d-appendix');
+
+  // create d-bibliography
+  var bibliography = $('<d-bibliography></d-bibliography>');
+  $('#distill-bibliography').wrap(bibliography);
+
+  // flag indicating that we have appendix items
+  var appendix = $('.appendix-bottom').children('h3').length > 0;
+
+  // replace citations with <d-cite>
+  $('.citation').each(function(i, val) {
+    appendix = true;
+    var cites = $(this).attr('data-cites').split(" ");
+    var dt_cite = $('<d-cite></d-cite>');
+    dt_cite.attr('key', cites.join());
+    $(this).replaceWith(dt_cite);
+  });
+  // remove refs
+  $('#refs').remove();
+
+  // replace footnotes with <d-footnote>
+  $('.footnote-ref').each(function(i, val) {
+    appendix = true;
+    var href = $(this).attr('href');
+    var id = href.replace('#', '');
+    var fn = $('#' + id);
+    var fn_p = $('#' + id + '>p');
+    fn_p.find('.footnote-back').remove();
+    var text = fn_p.html();
+    var dtfn = $('<d-footnote></d-footnote>');
+    dtfn.html(text);
+    $(this).replaceWith(dtfn);
+  });
+  // remove footnotes
+  $('.footnotes').remove();
+
+  $('h1.appendix, h2.appendix').each(function(i, val) {
+    $(this).changeElementType('h3');
+  });
+  $('h3.appendix').each(function(i, val) {
+    var id = $(this).attr('id');
+    $('.d-toc a[href="#' + id + '"]').parent().remove();
+    appendix = true;
+    $(this).nextUntil($('h1, h2, h3')).addBack().appendTo($('d-appendix'));
+  });
+
+  // show d-appendix if we have appendix content
+  $("d-appendix").css('display', appendix ? 'grid' : 'none');
+
+  // replace code blocks with d-code
+  $('pre>code').each(function(i, val) {
+    var code = $(this);
+    var pre = code.parent();
+    var clz = "";
+    var language = pre.attr('class');
+    if (language) {
+      // map unknown languages to "clike" (without this they just dissapear)
+      if ($.inArray(language, ["bash", "clike", "css", "go", "html",
+                               "javascript", "js", "julia", "lua", "markdown",
+                               "markup", "mathml", "python", "svg", "xml"]) == -1)
+        language = "clike";
+      language = ' language="' + language + '"';
+      var dt_code = $('<d-code block' + language + clz + '></d-code>');
+      dt_code.text(code.text());
+      pre.replaceWith(dt_code);
+    } else {
+      code.addClass('text-output').unwrap().changeElementType('pre');
+    }
+  });
+
+  // localize layout chunks to just output
+  $('.layout-chunk').each(function(i, val) {
+
+    // capture layout
+    var layout = $(this).attr('data-layout');
+
+    // apply layout to markdown level block elements
+    var elements = $(this).children().not('d-code, pre.text-output, script');
+    elements.each(function(i, el) {
+      var layout_div = $('<div class="' + layout + '"></div>');
+      if (layout_div.hasClass('shaded')) {
+        var shaded_content = $('<div class="shaded-content"></div>');
+        $(this).wrap(shaded_content);
+        $(this).parent().wrap(layout_div);
+      } else {
+        $(this).wrap(layout_div);
+      }
+    });
+
+
+    // unwrap the layout-chunk div
+    $(this).children().unwrap();
+  });
+
+  // load distill framework
+  load_distill_framework();
+
+  // wait for window.distillRunlevel == 4 to do post processing
+  function distill_post_process() {
+
+    if (!window.distillRunlevel || window.distillRunlevel < 4)
+      return;
+
+    // hide author/affiliations entirely if we have no authors
+    var front_matter = JSON.parse($("#distill-front-matter").html());
+    var have_authors = front_matter.authors && front_matter.authors.length > 0;
+    if (!have_authors)
+      $('d-byline').addClass('hidden');
+
+    // table of contents
+    if (have_authors) // adjust border if we are in authors
+      $('.d-toc').parent().addClass('d-article-with-toc');
+
+    // strip links that point to #
+    $('.authors-affiliations').find('a[href="#"]').removeAttr('href');
+
+    // hide elements of author/affiliations grid that have no value
+    function hide_byline_column(caption) {
+      $('d-byline').find('h3:contains("' + caption + '")').parent().css('visibility', 'hidden');
+    }
+
+    // affiliations
+    var have_affiliations = false;
+    for (var i = 0; i<front_matter.authors.length; ++i) {
+      var author = front_matter.authors[i];
+      if (author.affiliation !== "&nbsp;") {
+        have_affiliations = true;
+        break;
+      }
+    }
+    if (!have_affiliations)
+      $('d-byline').find('h3:contains("Affiliations")').css('visibility', 'hidden');
+
+    // published date
+    if (!front_matter.publishedDate)
+      hide_byline_column("Published");
+
+    // document object identifier
+    var doi = $('d-byline').find('h3:contains("DOI")');
+    var doi_p = doi.next().empty();
+    if (!front_matter.doi) {
+      // if we have a citation and valid citationText then link to that
+      if ($('#citation').length > 0 && front_matter.citationText) {
+        doi.html('Citation');
+        $('<a href="#citation"></a>')
+          .text(front_matter.citationText)
+          .appendTo(doi_p);
+      } else {
+        hide_byline_column("DOI");
+      }
+    } else {
+      $('<a></a>')
+         .attr('href', "https://doi.org/" + front_matter.doi)
+         .html(front_matter.doi)
+         .appendTo(doi_p);
+    }
+
+     // change plural form of authors/affiliations
+    if (front_matter.authors.length === 1) {
+      var grid = $('.authors-affiliations');
+      grid.children('h3:contains("Authors")').text('Author');
+      grid.children('h3:contains("Affiliations")').text('Affiliation');
+    }
+
+    // inject pre code styles (can't do this with a global stylesheet b/c a shadow root is used)
+    $('d-code').each(function(i, val) {
+      var style = document.createElement('style');
+      style.innerHTML = 'pre code { padding-left: 10px; font-size: 12px; border-left: 2px solid rgba(0,0,0,0.1); } ' +
+                        '@media(min-width: 768px) { pre code { padding-left: 18px; font-size: 14px; } }';
+      if (this.shadowRoot)
+        this.shadowRoot.appendChild(style);
+    });
+
+    // move appendix-bottom entries to the bottom
+    $('.appendix-bottom').appendTo('d-appendix').children().unwrap();
+    $('.appendix-bottom').remove();
+
+    // clear polling timer
+    clearInterval(tid);
+
+    // show body now that everything is ready
+    on_load_complete();
+  }
+
+  var tid = setInterval(distill_post_process, 50);
+  distill_post_process();
+
+}
+
+function init_downlevel() {
+
+  init_common();
+
+   // insert hr after d-title
+  $('.d-title').after($('<hr class="section-separator"/>'));
+
+  // check if we have authors
+  var front_matter = JSON.parse($("#distill-front-matter").html());
+  var have_authors = front_matter.authors && front_matter.authors.length > 0;
+
+  // manage byline/border
+  if (!have_authors)
+    $('.d-byline').remove();
+  $('.d-byline').after($('<hr class="section-separator"/>'));
+  $('.d-byline a').remove();
+
+  // remove toc
+  $('.d-toc-header').remove();
+  $('.d-toc').remove();
+  $('.d-toc-separator').remove();
+
+  // move appendix elements
+  $('h1.appendix, h2.appendix').each(function(i, val) {
+    $(this).changeElementType('h3');
+  });
+  $('h3.appendix').each(function(i, val) {
+    $(this).nextUntil($('h1, h2, h3')).addBack().appendTo($('.d-appendix'));
+  });
+
+
+  // inject headers into references and footnotes
+  var refs_header = $('<h3></h3>');
+  refs_header.text('References');
+  $('#refs').prepend(refs_header);
+
+  var footnotes_header = $('<h3></h3');
+  footnotes_header.text('Footnotes');
+  $('.footnotes').children('hr').first().replaceWith(footnotes_header);
+
+  // move appendix-bottom entries to the bottom
+  $('.appendix-bottom').appendTo('.d-appendix').children().unwrap();
+  $('.appendix-bottom').remove();
+
+  // remove appendix if it's empty
+  if ($('.d-appendix').children().length === 0)
+    $('.d-appendix').remove();
+
+  // prepend separator above appendix
+  $('.d-appendix').before($('<hr class="section-separator" style="clear: both"/>'));
+
+  // trim code
+  $('pre>code').each(function(i, val) {
+    $(this).html($.trim($(this).html()));
+  });
+
+  // move posts-container right before article
+  $('.posts-container').insertBefore($('.d-article'));
+
+  $('body').addClass('downlevel');
+
+  on_load_complete();
+}
+
+
+function init_common() {
+
+  // jquery plugin to change element types
+  (function($) {
+    $.fn.changeElementType = function(newType) {
+      var attrs = {};
+
+      $.each(this[0].attributes, function(idx, attr) {
+        attrs[attr.nodeName] = attr.nodeValue;
+      });
+
+      this.replaceWith(function() {
+        return $("<" + newType + "/>", attrs).append($(this).contents());
+      });
+    };
+  })(jQuery);
+
+  // prevent underline for linked images
+  $('a > img').parent().css({'border-bottom' : 'none'});
+
+  // mark non-body figures created by knitr chunks as 100% width
+  $('.layout-chunk').each(function(i, val) {
+    var figures = $(this).find('img, .html-widget');
+    if ($(this).attr('data-layout') !== "l-body") {
+      figures.css('width', '100%');
+    } else {
+      figures.css('max-width', '100%');
+      figures.filter("[width]").each(function(i, val) {
+        var fig = $(this);
+        fig.css('width', fig.attr('width') + 'px');
+      });
+
+    }
+  });
+
+  // auto-append index.html to post-preview links in file: protocol
+  // and in rstudio ide preview
+  $('.post-preview').each(function(i, val) {
+    if (window.location.protocol === "file:")
+      $(this).attr('href', $(this).attr('href') + "index.html");
+  });
+
+  // get rid of index.html references in header
+  if (window.location.protocol !== "file:") {
+    $('.distill-site-header a[href]').each(function(i,val) {
+      $(this).attr('href', $(this).attr('href').replace("index.html", "./"));
+    });
+  }
+
+  // add class to pandoc style tables
+  $('tr.header').parent('thead').parent('table').addClass('pandoc-table');
+  $('.kable-table').children('table').addClass('pandoc-table');
+
+  // add figcaption style to table captions
+  $('caption').parent('table').addClass("figcaption");
+
+  // initialize posts list
+  if (window.init_posts_list)
+    window.init_posts_list();
+
+  // implmement disqus comment link
+  $('.disqus-comment-count').click(function() {
+    window.headroom_prevent_pin = true;
+    $('#disqus_thread').toggleClass('hidden');
+    if (!$('#disqus_thread').hasClass('hidden')) {
+      var offset = $(this).offset();
+      $(window).resize();
+      $('html, body').animate({
+        scrollTop: offset.top - 35
+      });
+    }
+  });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  if (is_downlevel_browser())
+    init_downlevel();
+  else
+    window.addEventListener('WebComponentsReady', init_distill);
+});
+
+</script>
+
+<!--/radix_placeholder_distill-->
+  <script src="../../site_libs/jquery-1.11.3/jquery.min.js"></script>
+  <script src="../../site_libs/bowser-1.9.3/bowser.min.js"></script>
+  <script src="../../site_libs/webcomponents-2.0.0/webcomponents.js"></script>
+  <script src="../../site_libs/distill-2.2.21/template.v2.js"></script>
+  <!--radix_placeholder_site_in_header-->
+<!--/radix_placeholder_site_in_header-->
+
+
+</head>
+
+<body>
+
+<!--radix_placeholder_front_matter-->
+
+<script id="distill-front-matter" type="text/json">
+{"title":"Purrr::Map","description":"This will provide a guide to using map() in R-studio.","authors":[{"author":"Shaina Trevino, Jonathan Rochelle, Andre Klest","authorURL":"https://example.com/norajones","affiliation":"&nbsp;","affiliationURL":"#"}],"publishedDate":"2019-06-12T00:00:00.000-07:00","citationText":"Klest, 2019"}
+</script>
+
+<!--/radix_placeholder_front_matter-->
+<!--radix_placeholder_navigation_before_body-->
+<header class="header header--fixed" role="banner">
+<nav class="distill-site-nav distill-site-header">
+<div class="nav-left">
+<a href="../../index.html" class="title">R Tutorials Blog</a>
+</div>
+<div class="nav-right">
+<a href="../../index.html">Home</a>
+<a href="../../about.html">About</a>
+<a href="javascript:void(0);" class="nav-toggle">&#9776;</a>
+</div>
+</nav>
+</header>
+<!--/radix_placeholder_navigation_before_body-->
+<!--radix_placeholder_site_before_body-->
+<!--/radix_placeholder_site_before_body-->
+
+<div class="d-title">
+<h1>Purrr::Map</h1>
+<p>This will provide a guide to using map() in R-studio.</p>
+</div>
+
+<div class="d-byline">
+  Shaina Trevino, Jonathan Rochelle, Andre Klest <a href="https://example.com/norajones" class="uri">https://example.com/norajones</a> 
+  
+<br/>06-12-2019
+</div>
+
+<div class="d-article">
+<div class="layout-chunk" data-layout="l-body">
+
+</div>
+<h2 id="importing-data">Importing data</h2>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+drug_by_year &lt;- import(here(&quot;data&quot;, &quot;drug_by_year.csv&quot;),
+                       setclass = &quot;tbl_df&quot;)
+
+recent_drug &lt;- import(here(&quot;data&quot;, &quot;2015_drug_dep.csv&quot;),
+                      setclass = &quot;tbl_df&quot;)</code></pre>
+</div>
+<p><code>purrr:map()</code> is a functional. It takes a vector (or list of vectors) and a function as it’s input, runs the function for each element in the vector and then returns a list.</p>
+<ul>
+<li>The <code>purrr</code> package is loaded when you load <code>tidyverse</code></li>
+</ul>
+<p>For example, suppose you have a list that contains two other numbered lists with 5 values rounded to two decimal places and you wanted to round them all to the nearest integer.</p>
+<p>Our list looks like this:</p>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+#creating list from two vectors of decimal values
+v &lt;- c(1.85, 2.07, 3.71, 4.21, 5.36)
+v1 &lt;- c(1.23, 2.53, 3.44, 4.71, 5.96)
+l &lt;- list(v, v1)
+l</code></pre>
+<pre><code>
+[[1]]
+[1] 1.85 2.07 3.71 4.21 5.36
+
+[[2]]
+[1] 1.23 2.53 3.44 4.71 5.96</code></pre>
+</div>
+<p>If we only had 1 vector to round, we could use the <code>round()</code> function</p>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+round(v)</code></pre>
+<pre><code>
+[1] 2 2 4 4 5</code></pre>
+</div>
+<p>However, this does not work when supplied our list</p>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+round(l)</code></pre>
+<pre><code>
+Error in round(l): non-numeric argument to mathematical function</code></pre>
+</div>
+<p>Instead, we need a function that will apply <code>round()</code> to every element in our list. That’s where we can use <code>map()</code></p>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+#takes vector and rounds up
+map(l, round)</code></pre>
+<pre><code>
+[[1]]
+[1] 2 2 4 4 5
+
+[[2]]
+[1] 1 3 3 5 6</code></pre>
+</div>
+<p>Notice how the output from <code>map()</code> is a list, and the <code>round()</code> function has been applied to each element in the list.</p>
+<p>You could also use <code>map()</code> with a single vector, however, in this case, the output is the same as when solely using the <code>round()</code> function. Additionally, you can adjust which decimal that you would like to round to by specifying the digits.</p>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+map(v, round, digits = 1)</code></pre>
+<pre><code>
+[[1]]
+[1] 1.8
+
+[[2]]
+[1] 2.1
+
+[[3]]
+[1] 3.7
+
+[[4]]
+[1] 4.2
+
+[[5]]
+[1] 5.4</code></pre>
+</div>
+<p>However, as mentioned above, this output is a list. When you have an atomic vector as an input or a list of numbered lists of length 1, you can coerce your output to an atomic vector. This coercion allows the function to utilize values that work within the operation called on.</p>
+<h4 id="map-variants"><code>map()</code> variants</h4>
+<p>You can override the return of list and instead return an atomic vector by using variants of <code>map()</code>:</p>
+<pre><code>
+* `map_dbl` returns vector of type double
+
+* `map_chr` returns a vector of type character
+
+* `map_lgl` returns a vector of type logical (e.g., `TRUE` or `FALSE`)
+
+* `map_int` returns a vector of type integer</code></pre>
+<p>For example, if we use <code>map_dbl</code> or <code>map_chr</code> for our previous example, we will have the same results, but the output will be different types.</p>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+#return vector of type double
+map_dbl(v, round)</code></pre>
+<pre><code>
+[1] 2 2 4 4 5</code></pre>
+<pre class="r"><code>
+#return vector as character
+map_chr(v, round)</code></pre>
+<pre><code>
+[1] &quot;2.000000&quot; &quot;2.000000&quot; &quot;4.000000&quot; &quot;4.000000&quot; &quot;5.000000&quot;</code></pre>
+</div>
+<p>Notice how the numbers are actually the same, but <code>map_dbl</code> returns a numeric vector, whereas <code>map_chr</code> returns a character vector.</p>
+<p>What if we wanted to know if each element in our vector is of type double, we would want to return a logical vector that tells us if the value is double (e.g., <code>TRUE</code>) or not (e.g., <code>FALSE</code>)</p>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+#return vector of type logical
+map_lgl(v, is.double)</code></pre>
+<pre><code>
+[1] TRUE TRUE TRUE TRUE TRUE</code></pre>
+</div>
+<p>This logical vector tells us that each element is of type double.</p>
+<p><code>map_int</code> returns an integer vector (i.e., whole numbers), therefore, we can use it to ask questions like: what is the length of each element in my vector?</p>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+#return vector of type integer
+map_int(v, length)</code></pre>
+<pre><code>
+[1] 1 1 1 1 1</code></pre>
+</div>
+<p>In this example, there is only 1 value per element in the vector, so all the lengths are 1.</p>
+<p>If we use the same code on our list object, it should tell us how many numbers are in each element of the list.</p>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+map_int(l, length)</code></pre>
+<pre><code>
+[1] 5 5</code></pre>
+</div>
+<p>There are 2 elements in our list and each has 5 values.</p>
+<h3 id="information-about-the-data">Information about the data</h3>
+<p>Data used in this tutorial came from the Center for Disease Control and Prevention’s (CDC) National Health and Nutrition Examination Survey (NHANES). The study began in 1999 and the most recent data collected and publicly available are from 2015-2016.</p>
+<p>These data and codebooks are available online <a href="https://www.cdc.gov/nchs/nhanes/about_nhanes.htm">here</a>.</p>
+<p>NHANES surveys around 5,000 participants accross the U.S. each year. Surveys include demographic, socioeconomic, dietary, and health related questions, as well as medical records, physiological assessments, and laboratory test.</p>
+<p>For this tutorial we will use two data frames:</p>
+<ol type="1">
+<li><p><code>drug_by_year</code> includes data from 2005 to 2015 and reports on the people who responded yes to using illicit substances in the last year.</p></li>
+<li><p><code>recent_drug</code> includes has data from 2015-2016 and shows the age of first drug use, a summed depression score, whether or not participants have been to rehab, have access to mental health services, and have health insurance.</p></li>
+</ol>
+<h3 id="using-map-in-data-frames">Using <code>map()</code> in data frames</h3>
+<p>Since <code>map()</code> can take a vector for an input, and data frames are lists containing vectors, you can use <code>map</code> to iterate through data frames.</p>
+<p>For example, say we want to use the NHANES data to calculate the mean for age of first use for each drug and depression scores. Since there are quite a bit of missing values in this data set, so we will need to add arguments to the mean function to ignore the missing data.</p>
+<p>The data frame looks like this</p>
+<div class="layout-chunk" data-layout="l-body">
+
+</div>
+<p>To add arguments to a function within <code>map()</code>, we need to create an inline anonymous function where your function is first specified with <code>function(x)</code> where <code>x</code> is a place holder for what the function is going to run on. Then you write a function that you want to run on each element (<code>x</code>).</p>
+<p>Therefore, to calculate the means, our <code>map()</code> function would look like this</p>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+means &lt;- map_dbl(d, function(x) mean(x, na.rm = TRUE)) 
+means</code></pre>
+</div>
+<p>There is also a shortcut you can use within <code>map()</code> functions where you don’t have to specify <code>function(x)</code>.</p>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+means &lt;- map_dbl(d, ~ mean(.x, na.rm = TRUE))
+means</code></pre>
+</div>
+<p>These two examples are exactly the same, the latter just has less code. <code>function(x)</code> is implied with the <code>~</code> and then you just have to use <code>.x</code> instead of <code>x</code> for what you are iterating over.</p>
+<h4 id="map_df"><code>map_df()</code></h4>
+<p>There is another <code>map()</code> variant that is useful when working with data frames, <code>map_df()</code>.</p>
+<p>You can use <code>map_df()</code> to return a data frame as the output instead of an atomic vector.</p>
+<p>For example, say we want to return a data frame of the means and standard deviations of each column within our data frame.</p>
+<p>You would expect the below example to work, but it doesn’t because only the last line in the function is being evaluated and printed, so we only get standard deviations as the output. Also note you need to use curly braces for longer functions as seen here.</p>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+map_df(d, function(x) {
+  mean(x, na.rm = TRUE)
+  sd(x, na.rm = TRUE)
+}) </code></pre>
+</div>
+<p>Instead, you need to instead use <code>summarize()</code> to work within the data frame and <code>summarize()</code> each vector</p>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+#creating a vector for the column names to add to data frame
+column_names &lt;- colnames(d) 
+
+map_df(d, function(x) {
+  summarize(d, mean = mean(x, na.rm = TRUE),
+            sd = sd(x, na.rm = TRUE))
+}, .id = &quot;column_names&quot;)</code></pre>
+</div>
+<p>Or you could do the above in two separate steps, using <code>map()</code> to loop the functions through vectors and then put the vectors into a data frame</p>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+#first create vectors by looping functions through data frames
+mean &lt;- map(d, ~mean(.x, na.rm = TRUE))
+sd &lt;- map(d, ~sd(.x, na.rm = TRUE))
+#then combine vectors
+cv &lt;- c(mean, sd, recursive = TRUE)
+#manually change attributes
+attr(cv, &quot;dim&quot;) &lt;- c(6, 2) #6 variables in two columns (mean and sd)
+colnames(cv) &lt;- c(&quot;mean&quot;, &quot;sd&quot;)
+#transform to data frame
+cv &lt;- data.frame(cv, row.names = column_names)
+cv</code></pre>
+</div>
+<p>Parallel Iteration (e.g., <code>map2_*</code>, <code>pmap_*</code>)</p>
+<p>The <code>map</code> variants discussed above all take a single input to iterate (i.e., call the function on), but sometimes you need to iterate through more than just one input.</p>
+<p>This can be accomplished with <code>map2_</code> or <code>pmap_</code></p>
+<ul>
+<li><p><code>map2_</code> iterates over two inputs (e.g., two vectors)</p></li>
+<li><p><code>pmap_</code> iterates over any number of inputs</p></li>
+</ul>
+<p>For example, say you wanted to calculate a weighted mean from a vector of data values and a vector of weights.</p>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+#create vectors for simulated data from mean distribution of our data and weights
+obs &lt;- map(1:1715, ~rnorm(n = 20, mean = 17.289, sd = 4.558))
+wts &lt;- map(1:1715, ~rpois(20, 5))</code></pre>
+</div>
+<p>The following example doesnt work because the weight argument is expecting a single value to apply to all observations, but we have a vector of weights.</p>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+map_dbl(obs, ~weighted.mean(.x, w = wts))</code></pre>
+</div>
+<p>Instead, we need a parallel iteration with <code>map2()</code> to run the function on each vector of observation with each corresponding vector of weights.</p>
+<p>Also, notice that when using <code>map2()</code> you will have an additional argument <code>.y</code>, along with <code>.x</code>, that corresponds to the second vector you are iterating through.</p>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+#note that we used head() to prevent the entirety of the extensive list to be displayed
+head(map2_dbl(obs, wts, ~weighted.mean(.x, .y)))</code></pre>
+</div>
+<p>The results is a weighted mean score for each participant.</p>
+<h4 id="pmap-briefly"><code>pmap()</code> briefly</h4>
+<p><code>pmap()</code> can be supplied any number of inputs that you provide in a single list. This list can contain any number of inputs or arguments.</p>
+<p><code>pmap()</code> is very useful when working with data frames in which there are many vectors of the same length that can be provided as inputs (i.e., columns)</p>
+<p>You can name the inputs in the list which is helpful when iterating through complex functions</p>
+<p>We will show you how to use <code>pmap</code> to iterate and build custom plots in a later blog post</p>
+<h4 id="other-purrr-functions-e.g.-walk_-reduce-modify_">Other <code>purrr</code> functions (e.g., <code>walk_*</code>, <code>reduce</code>, <code>modify_*</code>)</h4>
+<p>The <code>map()</code> variants discussed above all return an output (either an atomic vector or list). However, sometimes you don’t need to return an atomic vector or list, but iteration would still be helpful.</p>
+<p>Very useful variant of <code>map()</code> is <code>walk()</code>, specifically <code>walk2()</code> which can be used to save objects to a disk. Note: when saving something to a disk you have to provide 2 inputs: the object and the file path - this requires parallel iteration.</p>
+<p>The following code splits our longitudinal dataset by year and saves a separate .csv file for each year with the title (“year-2005”, etc.) in the data folder of the working directory</p>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+by_year &lt;- split(drug_by_year, drug_by_year$year)
+paths &lt;- here(&quot;data&quot;, paste0(&quot;year-&quot;, names(by_year), &quot;.csv&quot;))
+walk2(by_year, paths, write.csv)
+
+
+list.files(&quot;data&quot;)</code></pre>
+</div>
+<p>Other useful functions are:</p>
+<ul>
+<li><p><code>reduce()</code> takes a vector of any length as it’s input and returns a vector of length 1. For example <code>reduce(1:4, f)</code> returns <code>f(f(f(1, 2), 3), 4)</code>.</p></li>
+<li><p><code>modify()</code> returns the same type of input it is provided. For example, <code>modify(df, f)</code> will run the function on each column of the data frame and return a data frame as the output.</p></li>
+</ul>
+<h4 id="using-mutate-within-nest-is-powerful-in-list-columns">Using <code>mutate</code> within <code>nest()</code> is powerful in list columns</h4>
+<p>The data frames we have worked with so far have all contained columns of atomic vectors, however you can also have columns of lists within data frames (i.e., list column).</p>
+<p>You can use <code>group_by()</code> and <code>nest()</code> to split your data into list columns then apply <code>mutate</code> to:</p>
+<ol type="1">
+<li><p>fit models by the grouping factor and extract coefficients</p></li>
+<li><p>compare model fits</p></li>
+<li><p>extract means from models fit with two groups</p></li>
+<li><p>fit multiple different models for each grouping factor and view coefficients</p></li>
+</ol>
+<p>First, we need to transform our data a bit so that we can properly fit our models.</p>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+dat &lt;- recent_drug %&gt;% 
+  select(-1:-2, -age_stim) %&gt;%
+  gather(drug, age_use, -age, -sum_depression:-sex) %&gt;%
+  separate(drug, c(&quot;dis&quot;, &quot;drug&quot;), sep = &quot;_&quot;) %&gt;%
+  select(-dis) %&gt;% 
+  filter(!is.na(age_use)) %&gt;% 
+  mutate(mental_health = ifelse(mental_health == &quot;Yes&quot;, &quot;Yes&quot;, &quot;No&quot;),
+         sex = fct_relevel(sex, ref = &quot;Male&quot;),
+         mental_health = fct_relevel(mental_health, ref = &quot;No&quot;))</code></pre>
+</div>
+<p>Then, we will use <code>group_by()</code> and <code>nest()</code> to split our data by each type of drug, fit a model that predicts age of first use from participant sex for each drug category, and view the coefficients.</p>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+#fit one model per drug and view coefficients
+by_drug_coefs &lt;- dat %&gt;% 
+  group_by(drug) %&gt;% 
+  nest() %&gt;% 
+  mutate(model = map(data, ~lm(age_use ~ sex, data = .x)),
+         coef = map(model, ~tidy(.x))) %&gt;% 
+  unnest(coef)
+by_drug_coefs</code></pre>
+</div>
+<p>Next, we can compare all model fits (note the model fits will not be good since our models were not significant).</p>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+#Look at model fit stats per drug model
+by_drug_fit &lt;- dat %&gt;% 
+  group_by(drug) %&gt;% 
+  nest() %&gt;% 
+  mutate(model = map(data, ~lm(age_use ~ sex, data = .x)),
+         fit = map(model, ~glance(.x))) %&gt;% 
+  unnest(fit)
+by_drug_fit</code></pre>
+</div>
+<p>Finally, we can also extract the mean age of first use for males and females for each drug</p>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+#mean age of use for males and females in first model
+by_drug_sex &lt;- dat %&gt;% 
+  group_by(drug) %&gt;% 
+  nest() %&gt;% 
+  mutate(model = map(data, ~lm(age_use ~ sex, data = .x)),
+         coefs = map(model, coef),
+         males = map_dbl(coefs, 1),
+         females = males + map_dbl(coefs, 2)) %&gt;% 
+  select(drug, males, females)
+by_drug_sex</code></pre>
+</div>
+<p>Another powerful use of list columns is being able to fit multiple models by each drug. Then, you could run through the same steps as above to compare model fits, etc.</p>
+<div class="layout-chunk" data-layout="l-body">
+<pre class="r"><code>
+#fit multiple models by year
+by_drug_models &lt;- dat %&gt;% 
+  group_by(drug) %&gt;% 
+  nest() %&gt;% 
+  mutate(m1 = map(data, ~lm(age_use ~ sex, data = .x)),
+         m2 = map(data, ~lm(age_use ~ sex + mental_health, data = .x)),
+         m3 = map(data, ~lm(age_use ~ sex * mental_health, data = .x)))</code></pre>
+</div>
+<!--radix_placeholder_article_footer-->
+<!--/radix_placeholder_article_footer-->
+</div>
+
+<div class="d-appendix">
+</div>
+
+
+<!--radix_placeholder_site_after_body-->
+<!--/radix_placeholder_site_after_body-->
+<!--radix_placeholder_appendices-->
+<div class="appendix-bottom"></div>
+<!--/radix_placeholder_appendices-->
+<!--radix_placeholder_navigation_after_body-->
+<!--/radix_placeholder_navigation_after_body-->
+
+</body>
+
+</html>

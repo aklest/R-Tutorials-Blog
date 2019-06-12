@@ -1,0 +1,26 @@
+name: "R Tutorials Blog"
+title: "R Tutorials Blog"
+description: |
+  Final Project Blog containing Tutorials for R-Studio
+output_dir: "docs"
+base_url: https://beta.rstudioconnect.com/content/3776/
+navbar:
+  ---
+navbar:
+  left:
+    - text: "Posts"
+      menu:
+        - text: "Purrr::Map"
+          href: "purrrmap.html"
+        - text: "Visualizing Distributions"
+          href: "lab2.html"
+        - text: "Final Summary"
+          href: "final-summary.html"
+  right:
+    - text: "Home"
+      href: index.html
+    - text: "About"
+      href: about.html
+    - icon: fa fa-github
+      href: https://github.com/aklest/R-Tutorials-Blog.git
+---
